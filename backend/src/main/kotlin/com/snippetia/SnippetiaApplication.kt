@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing
 import org.springframework.scheduling.annotation.EnableAsync
 import org.springframework.scheduling.annotation.EnableScheduling
 import org.springframework.transaction.annotation.EnableTransactionManagement
+import org.springframework.kafka.annotation.EnableKafka
 
 @SpringBootApplication
 @EnableJpaAuditing
@@ -14,6 +15,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement
 @EnableAsync
 @EnableScheduling
 @EnableTransactionManagement
+@EnableKafka
 class SnippetiaApplication
 
 fun main(args: Array<String>) {

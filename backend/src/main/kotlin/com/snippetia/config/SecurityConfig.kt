@@ -1,7 +1,7 @@
 package com.snippetia.config
 
 import com.snippetia.security.*
-import com.snippetia.service.UserService
+import com.snippetia.service.AuthService
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.http.HttpMethod
@@ -27,7 +27,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource
 class SecurityConfig(
     private val jwtAuthenticationEntryPoint: JwtAuthenticationEntryPoint,
     private val jwtRequestFilter: JwtRequestFilter,
-    private val userService: UserService,
+    private val authService: AuthService,
     private val webAuthnFilter: WebAuthnAuthenticationFilter,
     private val rateLimitFilter: RateLimitFilter
 ) {
@@ -38,7 +38,7 @@ class SecurityConfig(
     @Bean
     fun authenticationProvider(): DaoAuthenticationProvider {
         val authProvider = DaoAuthenticationProvider()
-        authProvider.setUserDetailsService(userService)
+        authProvider.setUserDetailsService(authService)
         authProvider.setPasswordEncoder(passwordEncoder())
         return authProvider
     }

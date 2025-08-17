@@ -25,7 +25,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.snippetia.domain.model.CodeSnippet
-import com.snippetia.presentation.theme.getLanguageColor
+import com.snippetia.presentation.theme.getLanguageIndicatorColor
 import com.snippetia.presentation.util.formatTimeAgo
 import com.snippetia.presentation.util.formatCount
 
@@ -76,14 +76,14 @@ fun SnippetCard(
                         .clickable { onUserClick() }
                 ) {
                     UserAvatar(
-                        avatarUrl = snippet.user.avatarUrl,
-                        username = snippet.user.username,
+                        avatarUrl = snippet.author.avatarUrl,
+                        username = snippet.author.username,
                         size = 32.dp
                     )
                     Spacer(modifier = Modifier.width(12.dp))
                     Column {
                         Text(
-                            text = snippet.user.getDisplayName(),
+                            text = snippet.author.getDisplayName(),
                             style = MaterialTheme.typography.labelLarge,
                             fontWeight = FontWeight.SemiBold,
                             color = MaterialTheme.colorScheme.onSurface
@@ -98,7 +98,7 @@ fun SnippetCard(
                 
                 // Language badge
                 LanguageBadge(
-                    language = snippet.programmingLanguage,
+                    language = snippet.language,
                     modifier = Modifier.padding(start = 8.dp)
                 )
             }
@@ -130,8 +130,8 @@ fun SnippetCard(
 
             // Code preview
             CodePreview(
-                code = snippet.codeContent,
-                language = snippet.programmingLanguage,
+                code = snippet.content,
+                language = snippet.language,
                 isExpanded = isExpanded,
                 onExpandToggle = { isExpanded = !isExpanded },
                 showFullContent = showFullContent
@@ -288,20 +288,20 @@ fun FeaturedSnippetCard(
                         modifier = Modifier.clickable { onUserClick() }
                     ) {
                         UserAvatar(
-                            avatarUrl = snippet.user.avatarUrl,
-                            username = snippet.user.username,
+                            avatarUrl = snippet.author.avatarUrl,
+                            username = snippet.author.username,
                             size = 24.dp
                         )
                         Spacer(modifier = Modifier.width(8.dp))
                         Text(
-                            text = snippet.user.getDisplayName(),
+                            text = snippet.author.getDisplayName(),
                             style = MaterialTheme.typography.labelMedium,
                             color = MaterialTheme.colorScheme.onPrimaryContainer
                         )
                     }
                     
                     LanguageBadge(
-                        language = snippet.programmingLanguage,
+                        language = snippet.language,
                         containerColor = MaterialTheme.colorScheme.primary,
                         contentColor = MaterialTheme.colorScheme.onPrimary
                     )
@@ -386,7 +386,7 @@ fun TrendingSnippetCard(
                 }
                 
                 LanguageBadge(
-                    language = snippet.programmingLanguage,
+                    language = snippet.language,
                     containerColor = MaterialTheme.colorScheme.tertiary,
                     contentColor = MaterialTheme.colorScheme.onTertiary,
                     style = MaterialTheme.typography.labelSmall
@@ -543,7 +543,7 @@ private fun ActionButton(
 fun LanguageBadge(
     language: String,
     modifier: Modifier = Modifier,
-    containerColor: Color = getLanguageColor(language),
+    containerColor: Color = getLanguageIndicatorColor(language),
     contentColor: Color = Color.White,
     style: androidx.compose.ui.text.TextStyle = MaterialTheme.typography.labelSmall
 ) {

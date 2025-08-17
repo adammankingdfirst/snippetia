@@ -12,108 +12,52 @@ import java.time.LocalDateTime
 data class CodeSnippet(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long = 0,
+    var id: Long? = null,
 
     @Column(nullable = false)
-    val title: String,
+    var title: String,
 
     @Column(columnDefinition = "TEXT")
-    val description: String? = null,
+    var description: String? = null,
 
-    @Column(name = "code_content", columnDefinition = "TEXT", nullable = false)
-    val codeContent: String,
+    @Column(name = "content", columnDefinition = "TEXT", nullable = false)
+    var content: String,
 
-    @Column(name = "programming_language", nullable = false)
-    val programmingLanguage: String,
-
-    @Column(name = "framework_version")
-    val frameworkVersion: String? = null,
+    @Column(name = "language", nullable = false)
+    var language: String,
 
     @ElementCollection
     @CollectionTable(name = "snippet_tags", joinColumns = [JoinColumn(name = "snippet_id")])
     @Column(name = "tag")
-    val tags: Set<String> = setOf(),
+    var tags: MutableSet<String> = mutableSetOf(),
 
     @Column(name = "is_public")
-    val isPublic: Boolean = true,
-
-    @Column(name = "is_featured")
-    val isFeatured: Boolean = false,
+    var isPublic: Boolean = true,
 
     @Column(name = "view_count")
-    val viewCount: Long = 0,
+    var viewCount: Long = 0,
 
     @Column(name = "like_count")
-    val likeCount: Long = 0,
+    var likeCount: Long = 0,
 
     @Column(name = "fork_count")
-    val forkCount: Long = 0,
-
-    @Column(name = "download_count")
-    val downloadCount: Long = 0,
-
-    @Column(name = "file_size")
-    val fileSize: Long = 0,
-
-    @Column(name = "checksum")
-    val checksum: String? = null,
-
-    @Column(name = "virus_scan_status")
-    @Enumerated(EnumType.STRING)
-    val virusScanStatus: VirusScanStatus = VirusScanStatus.PENDING,
-
-    @Column(name = "virus_scan_result", columnDefinition = "TEXT")
-    val virusScanResult: String? = null,
-
-    @Column(name = "security_scan_status")
-    @Enumerated(EnumType.STRING)
-    val securityScanStatus: SecurityScanStatus = SecurityScanStatus.PENDING,
-
-    @Column(name = "security_scan_result", columnDefinition = "TEXT")
-    val securityScanResult: String? = null,
-
-    @Column(name = "license_type")
-    val licenseType: String? = null,
-
-    @Column(name = "original_snippet_id")
-    val originalSnippetId: Long? = null,
-
-    @Column(name = "version_number")
-    val versionNumber: String = "1.0.0",
-
-    @Column(name = "git_repository_url")
-    val gitRepositoryUrl: String? = null,
-
-    @Column(name = "git_branch")
-    val gitBranch: String? = null,
-
-    @Column(name = "git_commit_hash")
-    val gitCommitHash: String? = null,
+    var forkCount: Long = 0,
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
-    val user: User,
+    @JoinColumn(name = "author_id", nullable = false)
+    var author: User,
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "category_id")
-    val category: Category? = null,
-
-    @OneToMany(mappedBy = "snippet", cascade = [CascadeType.ALL], fetch = FetchType.LAZY)
-    val versions: List<SnippetVersion> = listOf(),
-
-    @OneToMany(mappedBy = "snippet", cascade = [CascadeType.ALL], fetch = FetchType.LAZY)
-    val comments: List<Comment> = listOf(),
-
-    @OneToMany(mappedBy = "snippet", cascade = [CascadeType.ALL], fetch = FetchType.LAZY)
-    val likes: List<SnippetLike> = listOf(),
+    @JoinColumn(name = "forked_from_id")
+    var forkedFrom: CodeSnippet? = null,
 
     @CreatedDate
     @Column(name = "created_at", nullable = false, updatable = false)
-    val createdAt: LocalDateTime = LocalDateTime.now(),
+    var createdAt: LocalDateTime = LocalDateTime.now(),
 
     @LastModifiedDate
     @Column(name = "updated_at")
-    val updatedAt: LocalDateTime = LocalDateTime.now()
+    var updatedAt: LocalDateTime = LocalDateTime.now()
 )
 
 enum class VirusScanStatus {

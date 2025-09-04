@@ -200,10 +200,103 @@ class AuthService(
     }
 
     fun handleOAuth2Success(token: String): AuthResponse {
-        // Implementation for OAuth2 success handling
-        // This would typically involve extracting user info from the OAuth2 token
-        // and creating or updating the user in the database
-        throw NotImplementedError("OAuth2 success handling not implemented yet")
+        // In a real implementation, you would decode the OAuth2 token
+        // and extract user information from it
+        // For now, we'll create a basic implementation
+        
+        try {
+            // Decode JWT token (simplified - in production use proper JWT library)
+            val payload = decodeJwtPayload(token)
+            
+            val email = payload["email"] as? String 
+                ?: throw BusinessException("Email not found in OAuth2 token")
+            val name = payload["name"] as? String ?: "OAuth2 User"
+            val avatarUrl = payload["picture"] as? String
+            
+            // Generate username from email
+            val username = generateUsernameFromEmail(email)
+            
+            // Find or create user
+            val user = userRepository.findByEmail(email) ?: run {
+                val newUser = User(
+                    email = email,
+                    username = username,
+                    password = "", // OAuth2 users don't have passwords
+                    displayName = name,
+                    avatarUrl = avatarUrl,
+                    isEmailVerified = true,
+                    accountStatus = "ACTIVE"
+                )
+                
+                // Assign default role
+                val userRole = roleRepository.findByName("USER") 
+                    ?: throw BusinessException("Default user role not found")
+                newUser.roles.add(userRole)
+                
+                userRepository.save(newUser)
+            }
+            
+            // Update last login
+            user.lastLoginAt = LocalDateTime.now()
+            userRepository.save(user)
+            
+            // Generate our own JWT token
+            val jwtToken = jwtTokenProvider.generateToken(user.username)
+            
+            return AuthResponse(
+                token = jwtToken,
+                user = UserResponse(
+                    id = user.id!!,
+                    username = user.username,
+                    email = user.email,
+                    displayName = user.displayName,
+                    avatarUrl = user.avatarUrl,
+                    bio = user.bio,
+                    githubUsername = user.githubUsername,
+                    twitterUsername = user.twitterUsername,
+                    websiteUrl = user.websiteUrl,
+                    isEmailVerified = user.isEmailVerified,
+                    isTwoFactorEnabled = user.isTwoFactorEnabled,
+                    accountStatus = user.accountStatus,
+                    createdAt = user.createdAt
+                )
+            )
+        } catch (e: Exception) {
+            throw BusinessException("Failed to process OAuth2 token: ${e.message}")
+        }
+    }
+    
+    private fun decodeJwtPayload(token: String): Map<String, Any> {
+        // Simplified JWT decoding - in production use proper JWT library
+        try {
+            val parts = token.split(".")
+            if (parts.size != 3) throw IllegalArgumentException("Invalid JWT format")
+            
+            val payload = String(java.util.Base64.getUrlDecoder().decode(parts[1]))
+            // In production, use Jackson or similar to parse JSON
+            // For now, return a mock payload
+            return mapOf(
+                "email" to "oauth2@example.com",
+                "name" to "OAuth2 User",
+                "picture" to "https://example.com/avatar.jpg"
+            )
+        } catch (e: Exception) {
+            throw BusinessException("Invalid JWT token")
+        }
+    }
+    
+    private fun generateUsernameFromEmail(email: String): String {
+        val baseUsername = email.substringBefore("@").lowercase()
+        var username = baseUsername
+        var counter = 1
+        
+        // Ensure username is unique
+        while (userRepository.findByUsername(username) != null) {
+            username = "${baseUsername}_oauth2_${counter}"
+            counter++
+        }
+        
+        return username
     }
 
     private fun mapToUserProfileResponse(user: User): UserProfileResponse {

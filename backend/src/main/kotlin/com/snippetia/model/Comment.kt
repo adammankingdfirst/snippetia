@@ -24,6 +24,12 @@ data class Comment(
     @JoinColumn(name = "snippet_id", nullable = false)
     var snippet: CodeSnippet,
 
+    @Column(name = "is_hidden")
+    var isHidden: Boolean = false,
+
+    @Column(name = "moderation_reason")
+    var moderationReason: String? = null,
+
     @CreatedDate
     @Column(name = "created_at", nullable = false, updatable = false)
     var createdAt: LocalDateTime = LocalDateTime.now()

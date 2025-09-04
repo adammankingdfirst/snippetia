@@ -51,6 +51,12 @@ data class CodeSnippet(
     @JoinColumn(name = "forked_from_id")
     var forkedFrom: CodeSnippet? = null,
 
+    @Column(name = "is_hidden")
+    var isHidden: Boolean = false,
+
+    @Column(name = "moderation_reason")
+    var moderationReason: String? = null,
+
     @CreatedDate
     @Column(name = "created_at", nullable = false, updatable = false)
     var createdAt: LocalDateTime = LocalDateTime.now(),

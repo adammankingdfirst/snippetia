@@ -1,4 +1,4 @@
-# 🔧 Snippetia Refactoring Summary
+# � Snipppetia Platform Transfory
 
 ## ✅ **Completed Refactoring Tasks**
 

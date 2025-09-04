@@ -58,6 +58,15 @@ data class User(
     @Column(name = "account_status")
     var accountStatus: String = "ACTIVE",
 
+    @Column(name = "is_suspended")
+    var isSuspended: Boolean = false,
+
+    @Column(name = "suspension_reason")
+    var suspensionReason: String? = null,
+
+    @Column(name = "suspended_until")
+    var suspendedUntil: LocalDateTime? = null,
+
     @Column(name = "email_verification_token")
     var emailVerificationToken: String? = null,
 
